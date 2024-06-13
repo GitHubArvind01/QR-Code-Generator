@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>QR Code Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+ 
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            display: flex;
+            padding: 0 10px;
+            min-height: 100vh;
+            align-items:self-start;
+            background: #000000;
+            justify-content: center;
+        }
+ 
+
+        .wrapper {
+            height: 450px;
+            max-width: 410px;
+            background: linear-gradient(#353434, #9e98f4);
+            border-radius: 7px;
+            padding: 20px 25px 0;
+            transition: height 0.2s ease;
+            box-shadow: 0 5px 10px rgb(255, 0, 0);
+            border: 3px solid rgb(0, 0, 0);
+        }
+
+        .wrapper.active {
+            height: 600px;
+        }
+
+        header h1 {
+            font-size: 31px;
+            font-weight: 900;
+            color: rgb(255, 255, 255);
+            font-family:Georgia, 'Times New Roman', Times, serif;
+        }
+
+        .wrapper .form {
+            margin: 20px 0 25px;
+        }
+
+        .form :where(input, button) {
+            width: 100%;
+            height: 55px;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            transition: 0.1s ease;
+        }
+
+        .form input {
+            font-size: 12px;
+            padding: 0 17px;
+            border: 1px solid #999;
+        }
+
+        .form input:focus {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.13);
+        }
+
+        .form input::placeholder {
+            color: #999;
+        }
+
+        .form button {
+            color: #ff0000;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            font-family:monospace;
+            font-size: 17px;
+            background: #baff7a;
+        }
+
+        .form button:hover {
+            color: #ffd53d;
+            background: #205e2e;
+        }
+
+        .qr-code {
+            opacity: 0;
+            display: flex;
+            padding: 33px 0;
+            border-radius: 5px;
+            align-items: center;
+            pointer-events: none;
+            justify-content: center;
+            border: 1px solid #ccc;
+        }
+
+        .wrapper.active .qr-code {
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.5s 0.05s ease;
+        }
+        body {
+            display: flex;
+            padding: 0 10px;
+            min-height: 100vh;
+            align-items: center;
+            background: #ffffff; /* Change background color to white */
+            justify-content: center;
+        }
+        header {
+            text-align: center; /* Center align the text */
+        }
+
+        header h1 {
+            font-size: 21px;
+            font-weight: 900;
+            color: rgb(255, 255, 255);
+            margin-bottom: 20px; /* Add margin for spacing */
+        }
+
+        .qr-code img {
+            width: 170px;
+        }
+
+        @media (max-width: 430px) {
+            .wrapper {
+                height: 255px;
+                padding: 16px 20px;
+            }
+            .wrapper.active {
+                height: 510px;
+            }
+            .form :where(input, button) {
+                height: 40px;
+                 
+            }
+            .qr-code img {
+                width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>QR Code Generator</h1>
+        </header>
+        <div class="form">
+            <input type="text" spellcheck="false" placeholder="Paste Url" />
+            <button>Generate QR</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        <div class="qr-code">
+            <img src="" alt="qr-code" />
+        </div>
+    </div>
+ <script>
+    const wrapper = document.querySelector(".wrapper"),
+  qrInput = wrapper.querySelector(".form input"),
+  generateBtn = wrapper.querySelector(".form button"),
+  qrImg = wrapper.querySelector(".qr-code img"),
+  resetBtn = document.getElementById("resetBtn"); // Get reset button by ID
+let preValue;
+
+generateBtn.addEventListener("click", () => {
+  let qrValue = qrInput.value.trim();
+  if (!qrValue || preValue === qrValue) return;
+  preValue = qrValue;
+  generateBtn.innerText = "Processing Wait...";
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`;
+  qrImg.addEventListener("load", () => {
+    wrapper.classList.add("active");
+    generateBtn.innerText = "Generated QR";
+  });
+});
+
+qrInput.addEventListener("keyup", () => {
+  if (!qrInput.value.trim()) {
+    wrapper.classList.remove("active");
+    preValue = "";
+  }
+});
+
+resetBtn.addEventListener("click", () => { // Add event listener for reset button
+  qrInput.value = ""; // Clear input field
+  qrImg.src = ""; // Clear QR code image source
+  wrapper.classList.remove("active"); // Remove 'active' class to hide QR code
+  preValue = ""; // Reset preValue variable
+});
+
+ </script>
